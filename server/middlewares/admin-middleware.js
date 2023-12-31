@@ -1,4 +1,3 @@
-const authMiddleware = require("./auth-middleware");
 
 const adminMiddleware = async (req ,res, next) => {
     try {
@@ -15,4 +14,4 @@ const adminMiddleware = async (req ,res, next) => {
 };
 
 
-module.exports = authMiddleware;
+module.exports = adminMiddleware;
