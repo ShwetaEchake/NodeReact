@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {  //provider
 
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [user, setUser] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [services, setServices] = useState("");
-
   const authorizationToken = `Bearer ${token}`;
 
   const  storeTokenInLs = (serverToken) => {
@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }) => {  //provider
   // JWT AUTHENICATION - to get the currently loggedin user data
 
   const userAuthentication =  async () => {
+    setIsLoading(true);
     try {
       const response = await fetch(URL,{
         method:"GET",
@@ -42,7 +43,13 @@ export const AuthProvider = ({ children }) => {  //provider
       const data = await response.json();
       console.log("user data", data.userData);
       setUser(data.userData);
-    }
+      setIsLoading(false);
+    }else{
+     console.log("Error fetching user data");
+     setIsLoading(false);
+  }
+    
+
 
     } catch (error) {
       console.log("Error fetching user data", error);
@@ -74,7 +81,7 @@ export const AuthProvider = ({ children }) => {  //provider
 
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, storeTokenInLs, LogoutUser, user , services, authorizationToken }}>
+    <AuthContext.Provider value={{ isLoggedIn, storeTokenInLs, LogoutUser, user , services, authorizationToken, isLoading }}>
         {children}
     </AuthContext.Provider>
   );

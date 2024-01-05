@@ -27,10 +27,24 @@ const getUserById = async (req , res, next) => {
       next(error);
     }
  };
- 
+
+
+//------------------------------------------
+//* user update Logic
+//-------------------------------------------
+const updateUserById = async (req , res, next) => {
+  try {
+   const id = req.params.id;
+   const updatedUserData = req.body;
+   const updatedData = await User.updateOne({ _id: id }, { $set : updatedUserData });
+    return res.status(200).json(updatedData);
+  } catch (error) {
+    next(error);
+  }
+};
  
 
- //------------------------------------------
+//------------------------------------------
 //* user delete Logic
 //-------------------------------------------
 const deleteUserById = async (req , res, next) => {
@@ -42,6 +56,7 @@ const deleteUserById = async (req , res, next) => {
       next(error);
     }
  };
+
 
 //------------------------------------------
 //* getAllContacts Logic
@@ -60,4 +75,18 @@ const getAllContacts = async (req , res, next) => {
 };
 
 
-module.exports = { getAllUsers,getAllContacts, deleteUserById, getUserById };
+
+//------------------------------------------
+//* contact delete Logic
+//-------------------------------------------
+const deleteContactById = async (req , res, next) => {
+  try {
+   const id = req.params.id;
+   const data = await Contact.deleteOne({ _id: id });
+   res.status(200).json({message : "Contact Deleted Successfully "});
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getAllUsers, getAllContacts, deleteUserById, getUserById, updateUserById, deleteContactById };

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../store/auth";
+import { toast } from 'react-toastify';
+import {useNavigate} from "react-router-dom";
+
 
 export const AdminUpdate = () =>  {
 
@@ -12,6 +15,8 @@ export const AdminUpdate = () =>  {
 
   const params = useParams();
   const { authorizationToken } = useAuth();
+  const navigate = useNavigate();
+
 
 
     // get single user data
@@ -35,15 +40,45 @@ export const AdminUpdate = () =>  {
   };
 
 
-
-
   useEffect(() => {
      getSingleUserData();
-  });
+  },[]);
 
-  const handleInput = () => {
-  
+  const handleInput = (e) => {
+   let name = e.target.name;
+   let value = e.target.value;
+
+   setData({
+    ...data,
+    [name]: value,
+   });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response =  await fetch(`http://localhost:5000/api/admin/users/update/${params.id}`, {
+        method:"PATCH",
+        headers : {
+          "Content-Type": "application/json",
+           Authorization: authorizationToken
+        },
+        body : JSON.stringify(data),
+      }); 
+      
+        if(response.ok){
+          toast.success("Updated Successfully");
+          navigate("/admin/users");
+        }else{
+          toast.error("Not Updated");
+        }
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
 
   return (
     <>
@@ -57,7 +92,7 @@ export const AdminUpdate = () =>  {
 
           {/* contact form content actual  */}
           <section className="section-form">
-            <form>
+            <form onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="username">username</label>
                 <input
